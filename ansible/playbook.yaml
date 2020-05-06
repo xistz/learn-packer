@@ -1,0 +1,35 @@
+- name : packer_ansible
+  hosts: default
+
+  tasks:
+    - name: Download Cloud Monitoring agent installation script
+      get_url:
+        url: https://dl.google.com/cloudagents/install-monitoring-agent.sh
+        dest: /home/packer/install-monitoring-agent.sh
+
+    - name: Install Cloud Monitoring agent
+      shell: 
+        cmd: bash install-monitoring-agent.sh
+        chdir: /home/packer
+      become: yes
+
+    - name: Delete Cloud Monitoring agent installation script
+      file:
+        path: /home/packer/install-monitoring-agent.sh
+        state: absent
+
+    - name: Download Cloud Logging agent installation script
+      get_url:
+        url: https://dl.google.com/cloudagents/install-logging-agent.sh
+        dest: /home/packer/install-logging-agent.sh
+
+    - name: Install Cloud Logging agent
+      shell: 
+        cmd: bash install-logging-agent.sh
+        chdir: /home/packer
+      become: yes
+
+    - name: Delete Cloud Logging agent installation script
+      file:
+        path: /home/packer/install-logging-agent.sh
+        state: absent
