@@ -1,0 +1,19 @@
+{
+  "builders": [
+    {
+      "type": "googlecompute",
+      "project_id": "learn-packer-276322",
+      "source_image": "debian-9-stretch-v20200420",
+      "ssh_username": "packer",
+      "zone": "us-central1-a",
+      "image_name": "test-image",
+      "disk_type": "pd-ssd"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "../ansible/playbook.yaml"
+    }
+  ]
+}
