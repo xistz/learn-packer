@@ -1,0 +1,33 @@
+name: Learn Packer CI/CD
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '*.md'
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '*.md'
+
+jobs:
+  build:
+    name: Build Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup
+        uses: actions/checkout@v2
+
+      - name: Setup gcloud CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Validate packer configuration
+        run: |
+          cd packer
+          packer validate example.json
