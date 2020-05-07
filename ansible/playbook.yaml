@@ -4,32 +4,44 @@
   tasks:
     - name: Download Cloud Monitoring agent installation script
       get_url:
-        url: https://dl.google.com/cloudagents/install-monitoring-agent.sh
-        dest: /home/packer/install-monitoring-agent.sh
+        url: https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh
+        dest: /home/packer/add-monitoring-agent-repo.sh
+
+    - name: Add Cloud Monitoring agent repository
+      command: 
+        cmd: bash add-monitoring-agent-repo.sh
+        chdir: /home/packer
+      become: true
 
     - name: Install Cloud Monitoring agent
-      shell: 
-        cmd: bash install-monitoring-agent.sh
-        chdir: /home/packer
-      become: yes
+      yum:
+        name: stackdriver-agent
+        state: latest
+      become: true
 
     - name: Delete Cloud Monitoring agent installation script
       file:
-        path: /home/packer/install-monitoring-agent.sh
+        path: /home/packer/add-monitoring-agent-repo.sh
         state: absent
 
     - name: Download Cloud Logging agent installation script
       get_url:
-        url: https://dl.google.com/cloudagents/install-logging-agent.sh
-        dest: /home/packer/install-logging-agent.sh
+        url: https://dl.google.com/cloudagents/add-logging-agent-repo.sh
+        dest: /home/packer/add-logging-agent-repo.sh
+
+    - name: Add Cloud Logging agent repository
+      command: 
+        cmd: bash add-logging-agent-repo.sh
+        chdir: /home/packer
+      become: true
 
     - name: Install Cloud Logging agent
-      shell: 
-        cmd: bash install-logging-agent.sh
-        chdir: /home/packer
-      become: yes
+      yum:
+        name: google-fluentd
+        state: latest
+      become: true
 
     - name: Delete Cloud Logging agent installation script
       file:
-        path: /home/packer/install-logging-agent.sh
+        path: /home/packer/add-logging-agent-repo.sh
         state: absent
