@@ -2,11 +2,11 @@
   "builders": [
     {
       "type": "googlecompute",
-      "project_id": "learn-packer-276322",
-      "source_image": "debian-9-stretch-v20200420",
+      "project_id": "{{user `project_id`}}",
+      "source_image": "{{user `source_image`}}",
       "ssh_username": "packer",
-      "zone": "us-central1-a",
-      "image_name": "test-image",
+      "zone": "{{user `zone`}}",
+      "image_name": "{{user `image_name`}}",
       "disk_type": "pd-ssd"
     }
   ],
@@ -15,5 +15,11 @@
       "type": "ansible",
       "playbook_file": "../ansible/playbook.yaml"
     }
-  ]
+  ],
+  "variables": {
+    "project_id": "learn-packer-276322",
+    "source_image": "centos-7-v20200429",
+    "zone": "asia-northeast1-a",
+    "image_name": "test-image"
+  },
 }
