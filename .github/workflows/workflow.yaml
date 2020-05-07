@@ -31,11 +31,12 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Get gcloud info
-        run: |
-          gcloud info
-
-      - name: Validate packer configuration
+      - name: Validate
         run: |
           cd packer
           packer validate example.json
+
+      - name: Build Image
+        run: |
+          cd packer
+          packer build example.json
