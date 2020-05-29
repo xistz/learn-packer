@@ -1,39 +1,27 @@
 {
+  "variables": {
+    "project_id": "{{env `PROJECT_ID`}}",
+    "source_image": "centos-7",
+    "zone": "asia-northeast1-a",
+    "image_name": "test-image",
+    "disk_size": "20"
+  },
   "builders": [
     {
       "type": "googlecompute",
       "project_id": "{{user `project_id`}}",
-      "source_image": "{{user `source_image`}}",
+      "source_image_family": "{{user `source_image`}}",
       "ssh_username": "packer",
       "zone": "{{user `zone`}}",
       "image_name": "{{user `image_name`}}",
       "disk_size": "{{user `disk_size`}}",
-      "disk_type": "pd-ssd",
-      "scopes": [
-        "https://www.googleapis.com/auth/userinfo.email",
-        "https://www.googleapis.com/auth/compute",
-        "https://www.googleapis.com/auth/devstorage.full_control",
-        "https://www.googleapis.com/auth/logging.write",
-        "https://www.googleapis.com/auth/monitoring.write"
-      ]
+      "disk_type": "pd-ssd"
     }
   ],
   "provisioners": [
     {
-      "type": "file",
-      "source": "rails",
-      "destination": "/tmp/"
-    },
-    {
       "type": "ansible",
       "playbook_file": "ansible/playbook.yaml"
     }
-  ],
-  "variables": {
-    "project_id": "{{env `PROJECT_ID`}}",
-    "source_image": "centos-7-v20200429",
-    "zone": "asia-northeast1-a",
-    "image_name": "test-image",
-    "disk_size": "20"
-  }
+  ]
 }
