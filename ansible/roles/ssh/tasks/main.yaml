@@ -1,0 +1,32 @@
+---
+- name: Setup alternate SSH port
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^Port'
+    line: 'Port {{ ssh_port }}'
+
+- name: Setup selinux for alternate SSH port
+  seport:
+    ports: '{{ ssh_port }}'
+    proto: tcp
+    setype: ssh_port_t
+    state: present
+
+- name: Restart sshd
+  systemd:
+    name: sshd
+    state: restarted
+
+- name: Setup firewall
+  firewalld:
+    port: '{{ ssh_port }}/tcp'
+    permanent: yes
+    state: enabled
+
+- name: Reload firewall
+  systemd:
+    name: firewalld
+    state: reloaded
+
+- name: Check
+  ping:
