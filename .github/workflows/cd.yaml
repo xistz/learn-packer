@@ -29,6 +29,11 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
+      - name: Get short SHA of kojoshin-back
+        id: get_tag
+        run: |
+          echo "::set-env name=IMAGE_TAG::$(git rev-parse --short HEAD)"
+
       - name: Build Image
         run: |
           packer build packer/example.json
