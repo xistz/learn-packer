@@ -1,12 +1,7 @@
-name: Learn Packer CI/CD
+name: Learn Packer CI
 
 on:
   pull_request:
-    branches:
-      - master
-    paths-ignore:
-      - '*.md'
-  push:
     branches:
       - master
     paths-ignore:
@@ -16,8 +11,8 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
 jobs:
-  build:
-    name: Build Image
+  validate:
+    name: Validate packer templates
     runs-on: ubuntu-latest
 
     steps:
@@ -33,10 +28,4 @@ jobs:
 
       - name: Validate
         run: |
-          cd packer
-          packer validate example.json
-
-      - name: Build Image
-        run: |
-          cd packer
-          packer build example.json
+          packer validate packer/example.json
