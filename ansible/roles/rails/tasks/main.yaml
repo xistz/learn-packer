@@ -6,9 +6,22 @@
     owner: '{{ user }}'
     group: '{{ group }}'
 
-- name: Move rails-sample
-  unarchive:
+- name: Move tarball
+  copy:
     src: files/rails-sample.tar.gz
-    dest: /var/www
+    dest: /tmp
     owner: '{{ user }}'
     group: '{{ group }}'
+
+- name: Unarchive tarball
+  unarchive:
+    src: tmp/rails-sample.tar.gz
+    dest: /var/www
+    remote_src: yes
+    owner: '{{ user }}'
+    group: '{{ group }}'
+
+- name: Delete tarball
+  file:
+    path: /tmp/rails-sample.tar.gz
+    state: absent
