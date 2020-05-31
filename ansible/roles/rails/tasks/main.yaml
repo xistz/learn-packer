@@ -20,8 +20,3 @@
     remote_src: yes
     owner: '{{ user }}'
     group: '{{ group }}'
-
-- name: Delete tarball
-  file:
-    path: /tmp/rails-sample.tar.gz
-    state: absent
