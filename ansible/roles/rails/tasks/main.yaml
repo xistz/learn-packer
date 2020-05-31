@@ -1,0 +1,14 @@
+---
+- name: Create /var/www
+  file:
+    path: /var/www
+    state: directory
+    owner: '{{ user }}'
+    group: '{{ group }}'
+
+- name: Move rails-sample
+  unarchive:
+    src: files/rails-sample.tar.gz
+    dest: /var/www
+    owner: '{{ user }}'
+    group: '{{ group }}'

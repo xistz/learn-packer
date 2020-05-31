@@ -4,6 +4,10 @@
 
   vars:
     ssh_port: 10024
+    user: xistz
+    group: deploy
 
   roles:
+    - user
+    - rails
     - ssh

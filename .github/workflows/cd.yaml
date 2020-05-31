@@ -32,6 +32,13 @@ jobs:
           token: ${{ secrets.PAT }} # `GitHub_PAT` is a secret that contains your PAT
           path: rails-sample
 
+      - name: Setup gcloud CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
       - name: Get Image tag
         id: get_image_tag
         run: |
@@ -39,12 +46,14 @@ jobs:
           echo "::set-output name=image_tag::$(git rev-parse --short HEAD)"
           echo "::set-env name=IMAGE_TAG::$(git rev-parse --short HEAD)"
 
-      - name: Setup gcloud CLI
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+      - name: Create tarball
+        run: |
+          tar --exclude=rails-sample/.docker \
+              --exclude=rails-sample/.github \
+              --exclude=rails-sample/Dockerfile \
+              --exclude=rails-sample/docker-compose.yaml \
+              -czf ansible/roles/rails/files/rails-sample.tar.gz \
+              rails-sample
 
       - name: Build Image
         run: |
