@@ -9,15 +9,24 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  TF_VERSION: 0.12.25
+  TF_WORKING_DIR: terraform/environments/learn-packer
 
 jobs:
-  validate:
+  packer:
     name: Validate packer templates
     runs-on: ubuntu-latest
 
     steps:
       - name: Setup
         uses: actions/checkout@v2
+
+      - name: Setup rails-sample
+        uses: actions/checkout@v2
+        with:
+          repository: xistz/rails-sample
+          token: ${{ secrets.PAT }} # `GitHub_PAT` is a secret that contains your PAT
+          path: rails-sample
 
       - name: Setup gcloud CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -26,11 +35,55 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
-      - name: Get short SHA of kojoshin-back
-        id: get_tag
+      - name: Get Image tag
+        id: get_image_tag
         run: |
+          cd rails-sample
+          echo "::set-output name=image_tag::$(git rev-parse --short HEAD)"
           echo "::set-env name=IMAGE_TAG::$(git rev-parse --short HEAD)"
 
       - name: Validate
         run: |
           packer validate packer/example.json
+
+  terraform:
+    name: Validate terraform configuration
+    runs-on: ubuntu-latest
+    needs:
+      - packer
+
+    steps:
+      - name: Setup learn-packer
+        uses: actions/checkout@v2
+
+      - name: Setup gcsloud CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Get image tag
+        run: |
+          echo "::set-env name=TF_VAR_image_tag::${{ needs.packer.outputs.image_tag }}"
+
+      - name: Format
+        run: |
+          terraform fmt -recursive
+
+      - name: Init
+        run: |
+          terraform init $TF_WORKING_DIR
+
+      - name: Validate
+        run: |
+          terraform validate $TF_WORKING_DIR
+
+      - name: Plan
+        run: |
+          terraform plan $TF_WORKING_DIR
