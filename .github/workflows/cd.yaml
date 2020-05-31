@@ -37,7 +37,7 @@ jobs:
         run: |
           cd rails-sample
           echo "::set-output name=image_tag::$(git rev-parse --short HEAD)"
-          echo "::set-output name=IMAGE_TAG::$(git rev-parse --short HEAD)"
+          echo "::set-env name=IMAGE_TAG::$(git rev-parse --short HEAD)"
 
       - name: Setup gcloud CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
