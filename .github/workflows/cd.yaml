@@ -12,6 +12,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  TF_VERSION: 0.12.25
+  TF_WORKING_DIR: terraform/environments/learn-packer
 
 jobs:
   packer:
