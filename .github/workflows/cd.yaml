@@ -19,8 +19,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup
+      - name: Setup learn-packer
         uses: actions/checkout@v2
+
+      - name: Setup rails-sample
+        uses: actions/checkout@v2
+        with:
+          repository: xistz/rails-sample
+          token: ${{ secrets.PAT }} # `GitHub_PAT` is a secret that contains your PAT
+          path: rails-sample
+
+      - name: Check paths
+        run: |
+          ls
 
       - name: Setup gcloud CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
