@@ -15,7 +15,7 @@
 
 - name: Unarchive tarball
   unarchive:
-    src: tmp/rails-sample.tar.gz
+    src: /tmp/rails-sample.tar.gz
     dest: /var/www
     remote_src: yes
     owner: '{{ user }}'
