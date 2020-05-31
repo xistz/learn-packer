@@ -9,3 +9,6 @@ crash.log
 
 /.venv/*
 !/.venv/.gitkeep
+
+# Local .terraform directories
+**/.terraform/*
