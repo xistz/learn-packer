@@ -18,6 +18,9 @@ jobs:
     name: Build Image
     runs-on: ubuntu-latest
 
+    outputs:
+      image_tag: ${{ steps.get_image_tag.outputs.image_tag }}
+
     steps:
       - name: Setup learn-packer
         uses: actions/checkout@v2
@@ -29,9 +32,12 @@ jobs:
           token: ${{ secrets.PAT }} # `GitHub_PAT` is a secret that contains your PAT
           path: rails-sample
 
-      - name: Check paths
+      - name: Get Image tag
+        id: get_image_tag
         run: |
-          ls
+          cd rails-sample
+          echo "::set-output name=image_tag::$(git rev-parse --short HEAD)"
+          echo "::set-output name=IMAGE_TAG::$(git rev-parse --short HEAD)"
 
       - name: Setup gcloud CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -39,11 +45,6 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
-
-      - name: Get short SHA of kojoshin-back
-        id: get_tag
-        run: |
-          echo "::set-env name=IMAGE_TAG::$(git rev-parse --short HEAD)"
 
       - name: Build Image
         run: |
